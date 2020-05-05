@@ -3,25 +3,38 @@
 {% block title %}List Users{% endblock %}
 
 {% block body %}
-  <h1 class="container text-center">Users</h1>
-  <table class="table container">
+    <h1 class="container text-center">Users</h1>
+    <table class="table container">
 
-    <tbody>
-    <tr>
-      <th>Ref</th>
-      <th>Nom</th>
-      <th>Prenom</th>
-      <th>Email</th>
-    </tr>
-    {% for user in users %}
-    <tr>
-      <td ><a href="{{ path('users_edit',{ 'id': user.id }) }}">{{ user.id }}</a></td>
-      <td>{{ user.nom }}</td>
-      <td>{{ user.prenom }}</td>
-      <td>{{ user.email }}</td>
-    </tr>
-    {% endfor %}
-    </tbody>
-  </table>
+        <tbody>
+        <tr>
+            <th>Ref</th>
+            <th>Nom</th>
+            <th>Prenom</th>
+            <th>Email</th>
+            <th>Catégory</th>
+        </tr>
+        {% for user in users %}
+            <tr>
+                <td><a href="{{ path('users_edit',{ 'id': user.id }) }}">{{ user.id }}</a></td>
+                <td>{{ user.nom }}</td>
+                <td>{{ user.prenom }}</td>
+                <td>{{ user.email }}</td>
+                <td>
+                    {%  if user.category.name is defined %}
+                        {{ user.category.name }}
+                    {% else %}
+                        pas de catégorie
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <br>
+    <div class="navigation container">
+        {{ knp_pagination_render(users) }}
+    </div>
+    {# display navigation #}
 
 {% endblock %}

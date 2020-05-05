@@ -5,10 +5,12 @@ namespace App\Controller;
 use App\Entity\Users;
 use App\Form\UsersType;
 use App\Repository\UsersRepository;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Faker;
 
 /**
  * @Route("/users")
@@ -18,13 +20,19 @@ class UsersController extends AbstractController
     /**
      * @Route("/list", name="users_index", methods={"GET"})
      * @param UsersRepository $usersRepository
+     * @param PaginatorInterface $paginator
+     * @param Request $request
      * @return Response
      */
-    public function index(UsersRepository $usersRepository): Response
+    public function index(UsersRepository $usersRepository, PaginatorInterface $paginator,Request $request): Response
     {
-        return $this->render('users/list.html.twig', [
-            'users' => $usersRepository->findAll(),
-        ]);
+        $users = $paginator->paginate(
+            $usersRepository->findAllQuery(), /* query NOT result */
+            $request->query->getInt('page', 1), /*page number*/
+            10 /*limit per page*/
+        );
+        return $this->render('users/list.html.twig', ['users'=>$users]);
+
     }
 
     /**
@@ -50,6 +58,18 @@ class UsersController extends AbstractController
             'user' => $user,
             'form' => $form->createView(),
         ]);
+        /* $entityManager = $this->getDoctrine()->getManager();
+         for($i=0;$i<20;$i++)
+         {
+             $faker = Faker\Factory::create();
+             $user = new Users();
+             $user->setNom($faker->name);
+             $user->setPrenom($faker->lastName);
+             $user->setEmail($faker->email);
+             $entityManager->persist($user);
+         }
+         $entityManager->flush();
+        return $this->redirectToRoute("users_new");*/
     }
 
     /**
@@ -95,7 +115,7 @@ class UsersController extends AbstractController
      */
     public function delete(Request $request, Users $user): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$user->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $user->getId(), $request->request->get('_token'))) {
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->remove($user);
             $entityManager->flush();
