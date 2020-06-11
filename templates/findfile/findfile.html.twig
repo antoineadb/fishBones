@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Contact{% endblock %}
+
+{% block body %}
+    <div class="container">
+        {% for message in app.flashes('message') %}
+            <div class="alert alert-danger  mt-5" role="alert">
+                {{ message }}
+            </div>
+        {% endfor %}
+        <h1 class="mt-5">Find directory from File</h1>
+        {{ form(findfile) }}
+        <a href="{{ path('home') }}">back to home</a>
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success  mt-5" role="alert">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+
+{% endblock %}

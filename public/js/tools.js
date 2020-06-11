@@ -41,3 +41,26 @@ function readText() {
     });
 }
 
+function readMail() {
+    var url = "readMail";
+    $.ajax({
+        url: url,
+        type: 'GET',
+        dataType: 'html',
+        success: function (data)
+        {
+            $('#reponseMailAjax').text(data);
+        },
+        error: function (resultat, statut, erreur)
+        {
+            console.log(erreur);
+        }
+    });
+}
+function showButton(className1,className2)
+{
+    $('.'+className1).show();
+    $('.'+className2).hide();
+    $('#btn_show').hide();
+}
+
